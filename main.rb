@@ -59,4 +59,11 @@ $discord_client.command :config do |event|
 	"Repl Talk posts will be sent to this channel"
 end
 
+$discord_client.server_delete do |event|	
+	server_id = event.server
+	unless $servers_db.find( { "server_id" => server_id } ).first == nil
+		$servers_db.delete_one( { "server_id" => server_id } )
+	end
+end
+
 $discord_client.run
