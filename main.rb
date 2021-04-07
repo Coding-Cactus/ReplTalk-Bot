@@ -4,7 +4,13 @@ require "discordrb"
 
 $rt_client = Client.new
 mongo_client = Mongo::Client.new(ENV["monogurl"], database: "rtbot")
-$discord_client = Discordrb::Commands::CommandBot.new(token: ENV["bottoken"], prefix: "rt>", ignore_bots: true)
+$discord_client = Discordrb::Commands::CommandBot.new(
+	token: ENV["bottoken"],
+	prefix: "rt>",
+	ignore_bots: true,
+	spaces_allowed: true,
+	command_doesnt_exist_message: "The command **`%command%`** does not exist"
+)
 
 $id_db = mongo_client[:id]
 $servers_db = mongo_client[:servers]
@@ -27,12 +33,16 @@ def check_posts
 				footer: Discordrb::Webhooks::EmbedFooter.new(text: "#{post.board.name} Board")
 			)
 			$servers_db.find.each do |server|
-				$discord_client.send_message(
-					server[:channel_id],
-					nil,
-					false,
-					embed
-				)
+				begin
+					$discord_client.send_message(
+						server[:channel_id],
+						nil,
+						false,
+						embed
+					)
+				rescue
+					next
+				end
 			end
 		end
 		$id_db.update_one( { "id" => $id_db.find.first[:id] }, { "$set" => { "id" => posts[0].id } } ) unless posts.length == 0
@@ -45,11 +55,8 @@ $discord_client.ready do |_|
 	Thread.new { check_posts }
 end
 
-$discord_client.command :invite do |event|
-	event.bot.invite_url
-end
-
-$discord_client.command :config do |event|
+$discord_client.command :config, description: "Set the channel to send repl talk posts to", usage: "Do `**`rt>config`**` in the channel that you want repl talk posts to be sent to" do |event|
+	return "You need to be an admin to set a channel" unless event.author.defined_permission?(:administrator)
 	channel_id = event.channel.id
 	server_id = event.server.id
 	if $servers_db.find( { "server_id" => server_id } ).first == nil
@@ -58,6 +65,10 @@ $discord_client.command :config do |event|
 		$servers_db.update_one( { "server_id" => server_id }, { "$set" => { "channel_id" => channel_id } } )
 	end
 	"Repl Talk posts will be sent to this channel"
+end
+
+$discord_client.command :invite, description: "Sends my invite url so that you can add me to other servers" do |event|
+	event.bot.invite_url
 end
 
 $discord_client.server_delete do |event|	
