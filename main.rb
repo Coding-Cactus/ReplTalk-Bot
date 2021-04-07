@@ -14,17 +14,17 @@ def check_posts
 		posts = $rt_client.get_posts(order: "new", count: 10).select { |post| post.id > $id_db.find.first[:id] }
 		posts.each do |post|
 			embed = Discordrb::Webhooks::Embed.new(
-						title: post.title,
-						url: post.url,
-						description: post.preview,
-						colour: "0x#{post.board.color[1...post.board.color.length]}".to_i(16),
-						timestamp: Time.new,
-						author: Discordrb::Webhooks::EmbedAuthor.new(
-							name: post.author.username,
-							url: "https://repl.it/@#{post.author}",
-							icon_url: post.author.pfp
-						)
-					)
+				title: post.title,
+				url: post.url,
+				description: post.preview,
+				colour: "0x#{post.board.color[1...post.board.color.length]}".to_i(16),
+				timestamp: Time.new,
+				author: Discordrb::Webhooks::EmbedAuthor.new(
+					name: post.author.username,
+					url: "https://repl.it/@#{post.author}",
+					icon_url: post.author.pfp
+				)
+			)
 			$servers_db.find.each do |server|
 				$discord_client.send_message(
 					server[:channel_id],
