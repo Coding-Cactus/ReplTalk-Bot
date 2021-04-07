@@ -50,8 +50,8 @@ def check_posts
 	end
 end
 
-$discord_client.ready do |_|
-	$discord_client.watching= "repl talk"
+$discord_client.ready do
+	$discord_client.watching = "repl talk"
 	Thread.new { check_posts }
 end
 
