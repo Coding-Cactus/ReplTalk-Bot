@@ -20,10 +20,11 @@ def check_posts
 				colour: "0x#{post.board.color[1...post.board.color.length]}".to_i(16),
 				timestamp: Time.new,
 				author: Discordrb::Webhooks::EmbedAuthor.new(
-					name: post.author.username,
+					name: "#{post.author.username} (#{post.author.cycles})",
 					url: "https://repl.it/@#{post.author}",
 					icon_url: post.author.pfp
-				)
+				),
+				footer: Discordrb::Webhooks::EmbedFooter.new(text: "#{post.board.name} Board")
 			)
 			$servers_db.find.each do |server|
 				$discord_client.send_message(
