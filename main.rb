@@ -1,4 +1,5 @@
 require "mongo"
+require 'sinatra'
 require "repltalk"
 require "discordrb"
 
@@ -78,4 +79,8 @@ $discord_client.server_delete do |event|
 	end
 end
 
-$discord_client.run
+Thread.new { $discord_client.run }
+set :bind, "0.0.0.0"
+get "/" do
+	"Online!"
+end
