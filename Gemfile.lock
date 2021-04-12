@@ -46,7 +46,7 @@ GEM
     rack-protection (2.1.0)
       rack
     rake (13.0.3)
-    repltalk (2.1.0)
+    repltalk (3.0.0)
       http (~> 4.4, >= 4.4.1)
       json (~> 2.5, >= 2.5.1)
     rest-client (2.1.0)
@@ -75,7 +75,7 @@ PLATFORMS
 DEPENDENCIES
   discordrb (~> 3.4)
   mongo (~> 2.14)
-  repltalk (~> 2.1)
+  repltalk (~> 3.0)
   sinatra (~> 2.1)
 
 BUNDLED WITH

@@ -3,7 +3,7 @@ require 'sinatra'
 require "repltalk"
 require "discordrb"
 
-$rt_client = Client.new
+$rt_client = ReplTalk::Client.new
 mongo_client = Mongo::Client.new(ENV["monogurl"], database: "rtbot")
 $discord_client = Discordrb::Commands::CommandBot.new(
 	token: ENV["bottoken"],
@@ -18,7 +18,11 @@ $servers_db = mongo_client[:servers]
 
 def check_posts
 	loop do
-		posts = $rt_client.get_posts(order: "new", count: 10).select { |post| post.id > $id_db.find.first[:id] }
+		begin
+			posts = $rt_client.get_posts(order: "new", count: 10).select { |post| post.id > $id_db.find.first[:id] }
+		rescue
+			posts = []
+		end
 		posts.each do |post|
 			embed = Discordrb::Webhooks::Embed.new(
 				title: post.title,
