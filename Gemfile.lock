@@ -1,7 +1,7 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    addressable (2.7.0)
+    addressable (2.8.0)
       public_suffix (>= 2.0.2, < 5.0)
     bson (4.12.0)
     discordrb (3.4.0)
@@ -30,7 +30,7 @@ GEM
     http-form_data (2.3.0)
     http-parser (1.2.3)
       ffi-compiler (>= 1.0, < 2.0)
-    json (2.5.1)
+    json (2.6.1)
     mime-types (3.3.1)
       mime-types-data (~> 3.2015)
     mime-types-data (3.2021.0225)
@@ -45,8 +45,8 @@ GEM
     rack (2.2.3)
     rack-protection (2.1.0)
       rack
-    rake (13.0.3)
-    repltalk (3.0.0)
+    rake (13.0.6)
+    repltalk (4.1.2)
       http (~> 4.4, >= 4.4.1)
       json (~> 2.5, >= 2.5.1)
     rest-client (2.1.0)
@@ -75,7 +75,7 @@ PLATFORMS
 DEPENDENCIES
   discordrb (~> 3.4)
   mongo (~> 2.14)
-  repltalk (~> 3.0)
+  repltalk (~> 4.1.2)
   sinatra (~> 2.1)
 
 BUNDLED WITH
