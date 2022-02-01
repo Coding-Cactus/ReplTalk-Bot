@@ -13,4 +13,4 @@ gem "discordrb", "~> 3.4"
 
 gem "sinatra", "~> 2.1"
 
-gem "repltalk", "~> 4.2"
+gem "repltalk", "~> 4.3"
