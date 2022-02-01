@@ -3,7 +3,7 @@ require 'sinatra'
 require "repltalk"
 require "discordrb"
 
-$rt_client = ReplTalk::Client.new
+$rt_client = ReplTalk::Client.new(ENV["sid"])
 mongo_client = Mongo::Client.new(ENV["monogurl"], database: "rtbot")
 $discord_client = Discordrb::Commands::CommandBot.new(
 	token: ENV["bottoken"],
@@ -19,24 +19,24 @@ $servers_db = mongo_client[:servers]
 def check_posts
 	loop do
 		begin
-			posts = $rt_client.get_posts(order: "New", count: 10).select { |post| post.id > $id_db.find.first[:id] }
+			latest = $id_db.find.first[:id]
+			posts = $rt_client.get_posts(order: "New", count: 10).select { |post| post.id > latest && !post.repl.nil? }
 		rescue
 			posts = []
 		end
 		posts.each do |post|
-			puts post.content
 			embed = Discordrb::Webhooks::Embed.new(
 				title: post.title,
 				url: post.url,
 				description: post.content.length > 150 ? "#{post.preview}..." : post.content,
-				colour: "0x#{post.board.color[1...post.board.color.length]}".to_i(16),
+				colour: post.board.nil? ? "0053A6".to_i(16) : post.board.color[1...post.board.color.length].to_i(16),
 				timestamp: Time.new,
 				author: Discordrb::Webhooks::EmbedAuthor.new(
 					name: "#{post.author.username} (#{post.author.cycles})",
 					url: "https://repl.it/@#{post.author}",
 					icon_url: post.author.pfp
 				),
-				footer: Discordrb::Webhooks::EmbedFooter.new(text: "#{post.board.name} Board")
+				footer: Discordrb::Webhooks::EmbedFooter.new(text: post.board.nil? ? "Community Forum" : "#{post.board.name} Board")
 			)
 			$servers_db.find.each do |server|
 				begin
